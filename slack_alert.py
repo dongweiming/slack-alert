@@ -4,19 +4,22 @@ import os
 import ast
 import sys
 import time
-import codegen
 import signal
+import codegen
 import argparse
 import asyncio
-from functools import reduce
+from functools import reduce, partial
+
+from slacker import Slacker
 from tornado.ioloop import IOLoop
+from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR
 
 try:
     from configparser import ConfigParser as SafeConfigParser, Error
 except ImportError:
     from ConfigParser import SafeConfigParser, Error
 
-__version__ = '0.1'
+__version__ = '0.1.1'
 desc = 'Send message onto a channel when this need be alerted under Python3'
 
 
@@ -120,6 +123,12 @@ def find_jobs(path):
     return jobs
 
 
+def slack_listener(config, event):
+    slack = Slacker(config.token)
+    slack.chat.post_message(
+        '#{}'.format(config.channel), event.retval)
+
+
 def _main(args):
     plugins_path = os.path.join(args.path, 'plugins')
     scheduler_name = args.scheduler
@@ -139,6 +148,10 @@ def _main(args):
                            [apscheduler.schedulers, scheduler_module,
                             scheduler_name])
     scheduler = scheduler_cls()
+
+    listener = partial(slack_listener, args)
+    scheduler.add_listener(listener,
+                           EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
     for job, kw in jobs:
         scheduler.add_job(job, 'interval', **kw)
     g = scheduler.start()
