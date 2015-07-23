@@ -5,7 +5,6 @@ import ast
 import sys
 import time
 import signal
-import codegen
 import argparse
 import asyncio
 from functools import reduce, partial
@@ -19,7 +18,7 @@ try:
 except ImportError:
     from ConfigParser import SafeConfigParser, Error
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 desc = 'Send message onto a channel when this need be alerted under Python3'
 
 
@@ -103,8 +102,7 @@ class GetJobs(ast.NodeTransformer):
         sandbox = {}
         if args:
             node.decorator_list = decorator_list[1:]
-            exec(compile(codegen.to_source(node), '<string>', 'exec'), sandbox)
-            self.jobs.append((sandbox[node.name], args))
+            self.jobs.append((node.name, args))
         return node
 
 
@@ -118,8 +116,10 @@ def find_jobs(path):
             with open(file) as f:
                 expr_ast = ast.parse(f.read())
                 transformer = GetJobs()
-                transformer.visit(expr_ast)
-                jobs.extend(transformer.jobs)
+                sandbox = {}
+                exec(compile(transformer.visit(expr_ast),
+                             '<string>', 'exec'), sandbox)
+                jobs.extend([(sandbox[j], kw) for j, kw in transformer.jobs])
     return jobs
 
 

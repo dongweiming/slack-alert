@@ -1,7 +1,8 @@
 # coding=utf-8
-@deco(seconds=2)
+import os
+@deco(seconds=5)
 def a():
-    print(1)
+    print(os)
     print(2)
     return 1
 

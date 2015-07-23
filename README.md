@@ -2,7 +2,7 @@
 
 [slack-alert](https://github.com/dongweiming/slack-alert) is a tool that can send message into slack"s channel when this need be alerted.
 
-**At present only support Python3** it use [AST](https://docs.python.org/3/library/ast.html) fetch and parse code and use [apscheduler](http://apscheduler.readthedocs.org/) execute jobs.
+**At present only support Python3** it use [AST](https://docs.python.org/3/library/ast.html) compile and parse code and use [apscheduler](http://apscheduler.readthedocs.org/) execute jobs.
 the default scheduler use `AsyncIOScheduler`. but we also support:
 
 * TornadoScheduler
@@ -34,16 +34,24 @@ plugins
 ```python
 cat plugins/examples.py
 # coding=utf-8
+import os
 @deco(seconds=2)  # this function will be a job. because it has a decorator that contains `hours|seconds|minutes|days`
 def a():
-    print(1)
-    print(2)
+    print(1)  # you need use python3's syntax
+    print(os)  # you can also use some imported module in local
     return 1  # this return value will be send the specified channel
 
 
 def b():  # this function will not be a job
     print(3)
     return 2
+
+
+@deco2(xx=1)
+@deco(minutes=2, seconds=30)
+def c():  # this function will not be a job. because decorator `deco` need in the outside
+    print(4)
+    return 3
 ```
 
 ## Usage

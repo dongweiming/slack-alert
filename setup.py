@@ -11,8 +11,7 @@ def get_version():
                 return eval(line.split('=')[-1])
 
 
-install_requires = ['slacker', 'apscheduler', 'tornado', 'codegen',
-                    'gevent==1.1b1']
+install_requires = ['slacker', 'apscheduler', 'tornado', 'gevent==1.1b1']
 
 if sys.version_info.major == 3:
     install_requires.append('asyncio')
