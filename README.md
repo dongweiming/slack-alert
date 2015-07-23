@@ -19,6 +19,8 @@ use `OS X` or `linux`. you can copy it to `~/.config/slack_alert.conf`. use `win
 
 you need go http://api.slack.com/web generate token and modify `slack_alert.conf`
 
+you can visit https://api.slack.com/methods/chat.postMessage get all keys for `slack_alert.conf`
+
 ## Example plugin
 
 the jobs is put in a directory named `plugins`.

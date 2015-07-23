@@ -18,7 +18,7 @@ try:
 except ImportError:
     from ConfigParser import SafeConfigParser, Error
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 desc = 'Send message onto a channel when this need be alerted under Python3'
 
 
@@ -99,7 +99,6 @@ class GetJobs(ast.NodeTransformer):
             return node
         decorator = decorator_list[0]
         args = self.get_job_args(decorator)
-        sandbox = {}
         if args:
             node.decorator_list = decorator_list[1:]
             self.jobs.append((node.name, args))
@@ -125,8 +124,11 @@ def find_jobs(path):
 
 def slack_listener(config, event):
     slack = Slacker(config.token)
-    slack.chat.post_message(
-        '#{}'.format(config.channel), event.retval)
+    if event.retval:
+        slack.chat.post_message(
+            '#{}'.format(config.channel), event.retval,
+            username=config.username, icon_url=config.icon_url,
+            icon_emoji=config.icon_emoji)
 
 
 def _main(args):
