@@ -1,6 +1,8 @@
 # coding=utf-8
 import os
-@deco(seconds=2)
+
+
+@deco(seconds=5)
 def a():
     print(os)
     print(2)
