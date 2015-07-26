@@ -21,7 +21,7 @@ try:
 except ImportError:
     from ConfigParser import SafeConfigParser, Error
 
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 desc = 'Send message onto a channel when this need be alerted under Python3'
 g = defaultdict(int)
 stoped = {}
@@ -147,8 +147,6 @@ def slack_listener(config, event):
             notice = ' [notice: this message will pause {} minutes]'.format(
                 config.pause_time)
             res = str(res) + notice
-        print(res)
-        return res
         slack.chat.post_message(
             '#{}'.format(config.channel), res, username=config.username,
             icon_url=config.icon_url, icon_emoji=config.icon_emoji)

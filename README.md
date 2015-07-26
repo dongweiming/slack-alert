@@ -56,6 +56,7 @@ def c():  # this function will not be a job. because decorator `deco` need in th
     return 3
 ```
 
+
 ## Usage
 
 Switch to the directory you want to execute jobs. and this directory must has s subdirectory named `plugins`
@@ -65,5 +66,35 @@ And you only execute this:
 ```bash
 $slack-alert
 ```
+
+### Config file"s Options
+
+```bash
+cat ~/.config/slack_alert.conf
+
+[slack]
+token = xoxp-4231087425-4231087427-4463321974-03174a  # you need go http://api.slack.com/web register token
+channel = test  # which channel will receive your jobs results. also you can send the message to someone directly. this is user's id.
+username = MovieBot  # name of bot.
+icon_url = ''  # URL to an image to use as the icon for this message
+icon_emoji = :fire:  # emoji to use as the icon for this message. Overrides icon_url.
+working_hours = ''  # only time in working_hours jobs is work. format: `9:30-19:00`,`9:00-12:00,13:00-18:00`
+```
+
+### Command Options
+
+```bash
+slack-alert --version  # get current version and quit
+slack-alert --config ~/new/path/slack-alert.conf  # used a new config path
+slack-alert --ignore-global-config  # the local config is ignored
+slack-alert --scheduler GeventScheduler # You can choice scheduler type in (AsyncIOScheduler, BackgroundScheduler, GeventScheduler, TornadoScheduler). default is AsyncIOScheduler
+slack-alert --path  # default the jobs files is in current path"s `plugins` sub directory. you can use other path"s `plugins` sub directory.
+slack-alert --working-hours # it's same as above
+slack-alert --max-alert  # If you don't want receive all message in channel. you can use this. this job will send count don't exceed this limit until the pause time pass
+slack-alert --pause-time  # If receive get to the limit. we stop some minutes.
+
+
+```
+
 
 enjoy it
